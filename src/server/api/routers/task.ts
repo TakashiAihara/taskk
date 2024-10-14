@@ -6,8 +6,8 @@ import { TaskOptionalDefaultsSchema, TaskOptionalDefaultsWithRelationsSchema, Ta
 export const taskRouter = createTRPCRouter({
     update: publicProcedure
     .input(TaskPartialSchema.merge(TaskSchema.pick({id: true})))
-    .mutation(async ({ctx, input}) => {
-      return ctx.db.task.update(
+    .mutation(async ({ctx, input}) =>
+      ctx.db.task.update(
         {
           data: {...input},
           where: {
@@ -15,8 +15,20 @@ export const taskRouter = createTRPCRouter({
           }
         },
       )
+    ),
 
-    }),
+    delete: publicProcedure
+    .input(TaskSchema.pick({id: true}))
+    .mutation(async ({ctx, input}) =>
+      ctx.db.task.delete(
+        {
+          where: {
+            ...input
+          }
+        },
+      )
+    ),
+
     create: publicProcedure
     .input(TaskOptionalDefaultsSchema.omit({id: true}))
     .mutation(async ({ ctx, input }) => {
